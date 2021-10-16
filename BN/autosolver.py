@@ -132,15 +132,15 @@ def autosolver(anchura, altura, numMinas):
 
             print("TEST")
             node_query = Model_Game_ev.query([checkboxesToIterateSet[p]], evidences)
-            if not (checkboxesToIterateSet[p] in node_query):
+            if not (checkboxesToIterateSet[p] in node_query.variables):
                 continue
-
+                
+            assert(len(node_query.variables) == 1)
             print()
-            print(node_query)
             print("[P. !MINE - P. MINE]", flush=True)
-            print(node_query[checkboxesToIterateSet[p]].values)
+            print(node_query.values)
 
-            probValues = node_query[checkboxesToIterateSet[p]].values
+            probValues = node_query.values
             finalProbsList.append(probValues)
             """
             If we are sure that there is a mine, we mark it with a flag directly and they are calculations that we will not have

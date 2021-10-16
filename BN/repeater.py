@@ -3,13 +3,14 @@ import os
 import autosolver as aut
 import time
 import datetime
+from tqdm import tqdm
 from functools import wraps
 from itertools import cycle
 from msboard import bcolors
 
 
 
-testset = ([5,5,5],[5,5,6],[5,5,7],[8,8,13],[8,8,14],[8,8,15],[10,10,23],[10,10,24],[10,10,25])
+testset = ([5,5,5],[5,5,6],[5,5,7],[8,8,13],[8,8,14],[8,8,15],[10,10,25])
 
 """
 
@@ -23,9 +24,10 @@ test: list, array-like
 """
 
 def run(test : list):
-    for i in range(0,len(test)-1):
+    for i in tqdm(range(0,len(test)-1)):
         success = False
-        while not success:
+        tries = 0
+        while not success and tries < 5:
             print()
             print(bcolors.WARNING+"Test " + str(i+1) + " of " + str(len(test))+"."+bcolors.ENDC)
             print()
@@ -34,7 +36,7 @@ def run(test : list):
             print('...')
             print(bcolors.OKBLUE+'Solving board: '+bcolors.ENDC+str(test[i][0])+' x '+str(test[i][1])+' with '+str(test[i][2])+' mines')
             f = open('Test_'+str(test[i][0])+'x'+str(test[i][1])+'_'+str(test[i][2])+'_mines'+'.txt', 'w')
-            #sys.stdout = f
+            sys.stdout = f
             start_time = time.time()
             status = aut.autosolver(test[i][0],test[i][1],test[i][2])
             elapsed_time = time.time() - start_time
@@ -45,6 +47,7 @@ def run(test : list):
             
             if status == 0:
                 success = False
+                tries += 1
                 print()
                 print(bcolors.FAIL+" Lost game, retrying... "+bcolors.ENDC)
                 print()
