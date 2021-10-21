@@ -1,0 +1,28 @@
+This package contains the original Programmer's Minesweeper from:
+
+  http://www.ccs.neu.edu/home/ramsdell/pgms/
+
+modified to add additional features needed by Chris Studholme for a class
+project in Constraint Satisfaction Problems.  In the src directory, you will
+find a package called csp that contains CSPStrategy.  For more information
+about this strategy, see:
+
+  http://www.cs.toronto.edu/~cvs/minesweeper/
+
+The changes to PGMS itself are not very well documented.  Run PGMS with the -h
+option to get a listing of the supported options (including the new ones).  
+
+A compiled version of the original PGMS (w/o CSPStrategy) is in pgms.jar.  The
+file pgms-csp.jar has a compiled version of the modified PGMS with CSPStrategy.
+To see an expert game with CSPStrategy with standard rules, run:
+
+  java -jar pgms-csp.jar -e -R -s csp.CSPStrategy
+
+Any questions about the modifications to PGMS can be emailed to:
+
+  cvs@cs.utoronto.ca
+
+Questions about the original PGMS code should be emailed to the author of that
+code (see the web page at the top of this file).  
+
+Last modified: April 2001

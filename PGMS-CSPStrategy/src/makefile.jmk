@@ -1,0 +1,33 @@
+# To make the system, run the command:
+# $ jmk -f src/makefile.jmk 
+# in the root directory
+
+# other targets: clean and zip
+
+# jmk can be found at http://www.ccs.neu.edu/home/ramsdell.
+
+jar = "pgms.jar";
+pkgs = "map" "set" "sp" "eqn";
+srcs = (glob (patsubst "", "src/%/*.java", pkgs));
+docs = (glob "*.html");
+
+javaflags = "-O" "-sourcepath" "src" "-d" ".";
+
+jar: srcs; {
+  exec "javac" javaflags ?;
+  exec "jar" "cfm" @ "src/pgms.mf" pkgs;
+}
+
+zip = "pgms.zip";
+readme = "README.text";
+
+"zip":	zip;
+
+zip:	jar;
+{
+  exec "zip" "-r" zip jar "src" "doc" docs "pgms.sh" readme;
+}
+
+"clean": ; {
+  delall pkgs jar;
+}
