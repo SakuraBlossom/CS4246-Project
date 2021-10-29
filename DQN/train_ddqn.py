@@ -11,7 +11,8 @@ from numpy import float32
 from torch.autograd import Variable
 from multiprocessing import Process
 from torch import FloatTensor,LongTensor
-
+import os
+device= torch.device("cuda")
 '''
 GAME PARAMS:
 width   = width of board
@@ -59,10 +60,12 @@ class Driver():
         self.bomb_no = bomb_no
         self.box_count = width*height
         self.env = MineSweeper(self.width,self.height,self.bomb_no)
-        self.current_model = DDQN(self.box_count,self.box_count)
-        self.target_model = DDQN(self.box_count,self.box_count)
+        self.current_model = DDQN(self.box_count,self.box_count).to(device)
+        self.target_model = DDQN(self.box_count,self.box_count).to(device)
         self.target_model.eval()
         self.optimizer = torch.optim.Adam(self.current_model.parameters(),lr=0.003,weight_decay=1e-5)
+        self.batch_no = 0
+        #self.load_models(10000)
         self.scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer,step_size=2000,gamma=0.95)
         self.target_model.load_state_dict(self.current_model.state_dict())
         self.buffer = Buffer(100000)
@@ -83,10 +86,12 @@ class Driver():
     def load_models(self,number):
         path = "./pre-trained/ddqn_dnn"+str(number)+".pth"
         weights = torch.load(path)
+        self.batch_no = weights['epoch']
         self.current_model.load_state_dict(weights['current_state_dict'])
         self.target_model.load_state_dict(weights['target_state_dict'])
         self.optimizer.load_state_dict(weights['optimizer_state_dict'])
         self.current_model.epsilon = weights['epsilon']
+        
 
 
     ### Get an action from the DDQN model by supplying it State and Mask
@@ -119,13 +124,13 @@ class Driver():
         state,action,mask,reward,next_state,next_mask,terminal = self.buffer.sample(self.batch_size)
 
         ### Converts the variabls to tensors for processing by DDQN
-        state      = Variable(FloatTensor(float32(state)))
-        mask      = Variable(FloatTensor(float32(mask)))
-        next_state = FloatTensor(float32(next_state))
-        action     = LongTensor(float32(action))
-        next_mask      = FloatTensor(float32(next_mask))
-        reward     = FloatTensor(reward)
-        done       = FloatTensor(terminal)
+        state      = Variable(torch.cuda.FloatTensor(float32([t.to("cpu").numpy() for t in state])))
+        mask      = Variable(torch.cuda.FloatTensor(float32([t.to("cpu").numpy() for t in mask])))
+        next_state = torch.cuda.FloatTensor(float32(next_state))
+        action     = torch.cuda.LongTensor(float32(action))
+        next_mask      = torch.cuda.FloatTensor(float32(next_mask))
+        reward     = torch.cuda.FloatTensor(reward)
+        done       = torch.cuda.FloatTensor(terminal)
 
 
         ### Predicts Q value for present and next state with current and target model
@@ -155,19 +160,19 @@ class Driver():
             target_param.data.copy_(self.tau*local_param.data + (1.0-self.tau)*target_param.data)
         return loss_print
 
-    def save_checkpoints(self,batch_no):
-        path = "./pre-trained/ddqn_dnn"+str(batch_no)+".pth"
+    def save_checkpoints(self):
+        path = "./pre-trained/ddqn_dnn"+str(self.batch_no)+".pth"
         torch.save({
-            'epoch': batch_no,
+            'epoch': self.batch_no,
             'current_state_dict': self.current_model.state_dict(),
             'target_state_dict' : self.target_model.state_dict(),
             'optimizer_state_dict': self.optimizer.state_dict(),
             'epsilon':self.current_model.epsilon
         }, path)
 
-    def save_logs(self,batch_no,avg_reward,loss,wins):
+    def save_logs(self,avg_reward,loss,wins):
         res = [
-                    str(batch_no),
+                    str(self.batch_no),
                     "\tAvg Reward: ",
                     str(avg_reward),
                     "\t Loss: ",
@@ -185,20 +190,21 @@ class Driver():
 
 def main():
 
-    driver = Driver(6,6,6,False)
+    driver = Driver(8,8,10,False)
     state = driver.env.state
     epochs = 20000
-    save_every = 2000
+    save_every = 200
     count = 0
     running_reward = 0 
-    batch_no = 0
     wins=0
     total=0
     
-    while(batch_no<epochs):
+    while(driver.batch_no<epochs):
         
         # simple state action reward loop and writes the actions to buffer
         mask = 1- driver.env.fog
+        state      = Variable(FloatTensor(float32(state))).to(device)
+        mask      = Variable(FloatTensor(float32(mask))).to(device)
         action = driver.get_action(state,mask)
         next_state,terminal,reward,_ = driver.do_step(action)
         driver.buffer.push(state.flatten(),action,mask.flatten(),reward,next_state.flatten(),(1-driver.env.fog).flatten(),terminal)
@@ -222,10 +228,10 @@ def main():
             driver.current_model.eval()
 
             # Calculates metrics
-            batch_no+=1
+            driver.batch_no+=1
             avg_reward = running_reward/driver.batch_size
             wins = wins*100/total
-            driver.save_logs(batch_no,avg_reward,loss,wins)
+            driver.save_logs(avg_reward,loss,wins)
 
             # Updates epsilon based on reward
             driver.epsilon_update(avg_reward)
@@ -237,7 +243,7 @@ def main():
             total=0
 
             # Saves the model details to "./pre-trained" if 1000 batches have been processed
-            if(batch_no%save_every==0):
-                driver.save_checkpoints(batch_no)
+            if(driver.batch_no%save_every==0):
+                driver.save_checkpoints()
 
 main()
