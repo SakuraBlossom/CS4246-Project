@@ -160,7 +160,7 @@ class Driver():
         return loss_print
 
     def save_checkpoints(self):
-        path = "./pre-trained/ddqn_dnn"+str(batch_no)+".pth"
+        path = "./pre-trained/ddqn_dnn"+str(self.batch_no)+".pth"
         torch.save({
             'epoch': self.batch_no,
             'current_state_dict': self.current_model.state_dict(),
