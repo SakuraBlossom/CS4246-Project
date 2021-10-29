@@ -173,7 +173,7 @@ def autosolver(anchura, altura, numMinas):
                 break
 
         if discovered is False:
-            if not finalProbsList:
+            if not finalProbsList or len(finalProbsList) == 0:
                 print("Little evidence, retry")
                 break
             listasCeros = [item[0] for item in finalProbsList]
