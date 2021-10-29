@@ -1,0 +1,9 @@
+1 	Avg Reward:  0.174072265625 	 Loss:  0.4381829798221588 	 Wins:  0.0 	 Epsilon:  -1
+2 	Avg Reward:  0.16455078125 	 Loss:  0.44044366478919983 	 Wins:  0.0 	 Epsilon:  0.01
+3 	Avg Reward:  0.1715087890625 	 Loss:  0.4415396749973297 	 Wins:  0.0 	 Epsilon:  0.01
+4 	Avg Reward:  0.17626953125 	 Loss:  0.4379589259624481 	 Wins:  0.0 	 Epsilon:  0.01
+5 	Avg Reward:  0.1759033203125 	 Loss:  0.44010841846466064 	 Wins:  0.0 	 Epsilon:  0.01
+6 	Avg Reward:  0.171875 	 Loss:  0.430092453956604 	 Wins:  0.0 	 Epsilon:  0.01
+7 	Avg Reward:  0.180419921875 	 Loss:  0.43327561020851135 	 Wins:  0.11441647597254005 	 Epsilon:  0.01
+8 	Avg Reward:  0.175537109375 	 Loss:  0.42753052711486816 	 Wins:  0.0 	 Epsilon:  0.01
+9 	Avg Reward:  0.1707763671875 	 Loss:  0.43279191851615906 	 Wins:  0.0 	 Epsilon:  0.01

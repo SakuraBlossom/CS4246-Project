@@ -5,7 +5,7 @@ from torchsummary import summary
 from collections import deque
 import numpy as np
 import random
-device= torch.device("cuda")
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 class DDQN(nn.Module):
     
     def __init__(self, inp_dim, action_dim):
