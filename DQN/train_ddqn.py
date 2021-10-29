@@ -11,6 +11,7 @@ from numpy import float32
 from torch.autograd import Variable
 from multiprocessing import Process
 from torch import FloatTensor,LongTensor
+import os
 device= torch.device("cuda")
 '''
 GAME PARAMS:
