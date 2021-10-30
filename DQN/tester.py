@@ -76,7 +76,7 @@ def win_tester(games_no):
             step=0
     
     ### First_loss is subtracted so that the games with first pick as bomb are subtracted
-    print(f"Total Num of games (inc first step loss): {games_no}%")
+    print(f"Total Num of games (inc first step loss): {games_no}")
     print(f"Win Rate (excluding First Loss): {wins*100/(games_no-first_loss)}%")
     print(f"Win Rate: {wins*100/games_no}%")
 
