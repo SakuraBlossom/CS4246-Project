@@ -27,11 +27,12 @@ test: list, array-like
     test cases to be carried out
 """
 
-def run(test : list):
+def run(test : list, num_trials : int=1):
+    test_res = list()
     for i in tqdm(range(0,len(test)-1)):
-        success = False
-        tries = 0
-        while not success and tries < 5:
+        for trial_idx in range(num_trials):
+            success = False
+                
             print()
             print(bcolors.WARNING+"Test " + str(i+1) + " of " + str(len(test))+"."+bcolors.ENDC)
             print()
@@ -42,29 +43,39 @@ def run(test : list):
             f = open('Test_'+str(test[i][0])+'x'+str(test[i][1])+'_'+str(test[i][2])+'_mines'+'.txt', 'w')
             sys.stdout = f
             start_time = time.time()
-            status = aut.autosolver(test[i][0],test[i][1],test[i][2])
+            status = None
+            try:
+                status = aut.autosolver(test[i][0],test[i][1],test[i][2])
+            except Exception as e:
+                print("type error: " + str(e))
+                print(traceback.format_exc())
+
             elapsed_time = time.time() - start_time
             print(bcolors.OKBLUE+"Time spent: "+bcolors.ENDC+str(datetime.timedelta(seconds=elapsed_time)))
             print()
             sys.stdout = orig_stdout
             f.close()
             
-            if status == 0:
-                success = False
-                tries += 1
-                print()
-                print(bcolors.FAIL+" Lost game, retrying... "+bcolors.ENDC)
-                print()
-                print(bcolors.OKBLUE+"Time spent: "+bcolors.ENDC+str(datetime.timedelta(seconds=elapsed_time)))
-                print()
-                print("-----------------------------------------------------------------------------------------------------")
-            else:
-                success = True
-                print()
-                print(bcolors.OKGREEN+" ! Game won ! "+bcolors.ENDC)
-                print()
-                print(bcolors.OKBLUE+"Time spent: "+bcolors.ENDC+str(datetime.timedelta(seconds=elapsed_time)))
-                print()
-                print("-----------------------------------------------------------------------------------------------------")
+            success = (status == 0)
+            elapsed_time_str = str(datetime.timedelta(seconds=elapsed_time))
 
-run(testset)
+            if status is None:
+                status_str = bcolors.FAIL+" CRASH "+bcolors.ENDC
+            elif status == 0:
+                status_str = bcolors.OKGREEN+" ! Game won ! "+bcolors.ENDC
+            else:
+                status_str = bcolors.FAIL+" Lost game "+bcolors.ENDC
+
+            print(status_str)
+            print(bcolors.OKBLUE+"Time spent: "+bcolors.ENDC+str(elapsed_time_str))
+            print()
+            print("-----------------------------------------------------------------------------------------------------")
+            test_res.append(f"{test[i][0]}x{test[i][1]} with {test[i][2]} mines - TRY {trial_idx} - {status_str} - TIME: {elapsed_time_str} / {elapsed_time}")
+    
+        pass
+
+    summary = "\n".join(test_res)
+    print(summary)
+    return test_res
+
+run(testset, 10)
