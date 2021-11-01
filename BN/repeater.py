@@ -46,6 +46,8 @@ def run(test : list, num_trials : int=1):
             sys.stdout = f
             start_time = time.time()
             status = None
+            
+            status = aut.autosolver(test[i][0],test[i][1],test[i][2])
             try:
                 status = aut.autosolver(test[i][0],test[i][1],test[i][2])
             except Exception as e:
@@ -62,7 +64,7 @@ def run(test : list, num_trials : int=1):
 
             if status is None:
                 status_str = bcolors.FAIL+" CRASH "+bcolors.ENDC
-            elif status == 0:
+            elif status == 1:
                 status_str = bcolors.OKGREEN+" ! Game won ! "+bcolors.ENDC
             else:
                 status_str = bcolors.FAIL+" Lost game "+bcolors.ENDC

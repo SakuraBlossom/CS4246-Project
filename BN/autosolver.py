@@ -44,16 +44,16 @@ def autosolver(anchura, altura, numMinas):
             for j in range(board.board_height):
                 field_status = board.info_map[j, i]
                 if field_status in range(1,8):
-                    evidences["X" + str(i) + str(j)] = 0
-                    evidences["Y" + str(i) + str(j)] = field_status
+                    evidences[f"X{i:02}_{j:02}"] = 0
+                    evidences[f"Y{i:02}_{j:02}"] = field_status
                 elif field_status == 0:
-                    evidences["X" + str(i) + str(j)] = 0
-                    evidences["Y" + str(i) + str(j)] = 0
+                    evidences[f"X{i:02}_{j:02}"] = 0
+                    evidences[f"Y{i:02}_{j:02}"] = 0
                 elif field_status == 11:
-                    evidencesList.append("Y" + str(i) + str(j))
-                    undiscovered.append("X" + str(i) + str(j))
+                    evidencesList.append(f"Y{i:02}_{j:02}")
+                    undiscovered.append(f"X{i:02}_{j:02}")
                 elif field_status == 9:
-                    evidences["X" + str(i) + str(j)] = 1
+                    evidences[f"X{i:02}_{j:02}"] = 1
 
         print("")
         print("△ evidence discovered after the click  -----------------------------")
@@ -69,8 +69,8 @@ def autosolver(anchura, altura, numMinas):
         checkboxesToIterate = []
         for e in range(len(list(evidences.keys()))):
             #Take out the neighbors of each of the evidences.
-            ke = list(evidences.keys())[e][1:2]
-            le = list(evidences.keys())[e][2:3]
+            ke = list(evidences.keys())[e][1:3]
+            le = list(evidences.keys())[e][4:5]
             listaVecinosEvidencia = game.neightbours_of_position(int(ke),int(le))
             for vesii in listaVecinosEvidencia:
                 if vesii not in list(evidences.keys()):
@@ -104,10 +104,11 @@ def autosolver(anchura, altura, numMinas):
             modelCopy = modelo.copy()
             discardedNodes = []
             noBorrar =[]
-            kee = checkboxesToIterateSet[p][1:2]
-            lee = checkboxesToIterateSet[p][2:3]
-            listaVecinosNode_query = game.neightbours_of_position(int(kee),int(lee))
-            noBorrar.append("Y"+str(kee)+str(lee))
+            kee = int(checkboxesToIterateSet[p][1:3])
+            lee = int(checkboxesToIterateSet[p][4:5])
+            print(kee, flush=True)
+            listaVecinosNode_query = game.neightbours_of_position(kee, lee)
+            noBorrar.append(f"Y{kee:02}_{lee:02}")
             noBorrar.append(checkboxesToIterateSet[p])
             discardedNodes=[]
             contadorEvideciasVecinos = 0
@@ -115,9 +116,9 @@ def autosolver(anchura, altura, numMinas):
             for vesiii in listaVecinosNode_query:
                 if vesiii in list(evidences.keys()):
                     contadorEvideciasVecinos = contadorEvideciasVecinos + 1
-                    ke = vesiii[1:2]
-                    le = vesiii[2:3]
-                    noBorrar.append("Y"+str(ke)+str(le))
+                    ke = vesiii[1:3]
+                    le = vesiii[4:5]
+                    noBorrar.append(f"Y{ke}_{le}")
                 noBorrar.append(vesiii)
 
             discovered = False
@@ -146,8 +147,8 @@ def autosolver(anchura, altura, numMinas):
             to repeat afterwards. 
             """
             if probValues[1] >= 0.790:
-                game.play_move("flag",int(kee),int(lee))
-                checkedBoxes.append("X"+str(kee)+str(lee))
+                game.play_move("flag", kee, lee)
+                checkedBoxes.append(f"X{kee:02}_{lee:02}")
                 print()
                 print("¡¡ Found mine !!")
                 print()
@@ -183,10 +184,10 @@ def autosolver(anchura, altura, numMinas):
                 """                
                 if con_bombas[h] >= .800:
                     elemento = checkboxesToIterateSet[h]
-                    ke = elemento[1:2]
-                    le = elemento[2:3]
+                    ke = elemento[1:3]
+                    le = elemento[4:5]
                     game.play_move("flag",int(ke),int(le))
-                    checkedBoxes.append("X"+str(ke)+str(le))
+                    checkedBoxes.append(f"X{ke}_{le}")
                     print()
                     print("!! Found mine !!")
                     print()
@@ -209,8 +210,8 @@ def autosolver(anchura, altura, numMinas):
                 print(winner)
                 res = 1 - maximo
                 print("Se ha discovered que la casilla " + winner + " es la que menos posibilidades tiene de contener una mina, en concreto: " + str(res))
-                tt = winner[1:2]
-                ss = winner[2:3]
+                tt = winner[1:3]
+                ss = winner[4:5]
                 print("Click en: "+str(tt)+","+str(ss))
                 game.play_move("click",int(tt),int(ss))
                 game.print_board()

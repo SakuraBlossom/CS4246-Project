@@ -199,7 +199,7 @@ class MSGame(object):
         nodes_names = []
         for i in range(self.board.board_width):
             for j in range(self.board.board_height):
-                nodes_names.append("X" + str(i) + str(j))
+                nodes_names.append(f"X{i:02}_{j:02}")
         return nodes_names
     
     def es_esquina(self,i,j):
@@ -381,9 +381,9 @@ class MSGame(object):
         TODO: some more expections..
         """
         if self.game_status == 0:
-            print(" [ 💣 💣 💣 💣 💣 💣 ] ¡ HAS PERDIDO ! [ 💣 💣 💣 💣 💣 💣 ]")
+            print(" [ 💣 💣 💣 💣 💣 💣 ] ¡ Lost Game ! [ 💣 💣 💣 💣 💣 💣 ]")
         elif self.game_status == 1:
-            print(" 🎉 🎉 🎉 🎉 🎉  TODAS LAS BOMBAS MARCADAS, HAS GANADO.  🎉 🎉 🎉 🎉 🎉  ")
+            print(" 🎉 🎉 🎉 🎉 🎉  ALL MARKED BOMBS, YOU WON..  🎉 🎉 🎉 🎉 🎉  ")
 
     def parse_move(self, move_msg):
         """Parse a move from a string.
@@ -427,8 +427,8 @@ class MSGame(object):
 
         vecinos = self.neightbours_of_position(posi,posj)
         for vecino in vecinos:
-            i = int(vecino[1:2])
-            j = int(vecino[2:3])
+            i = int(vecino[1:3])
+            j = int(vecino[4:5])
             if self.board.mine_map[j,i] == 1:
                 self.mover_mina_a_esquina(j,i)
 
