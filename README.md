@@ -19,3 +19,4 @@ MineSweeper AI that beats Mine Sweeper with the least number of moves.
 1. Batches are saved every 200 epoch
 1. Comment line 68 in train_ddqn.py or train_ddqn_cpu.py if training from scratch
 1. To resume training, uncomment line 68 and input the epoch to train from. (check under pre-trained for last saved. )
+`python3.9 train_ddqn_cpu.py`
