@@ -32,15 +32,17 @@ def run(test : list, num_trials : int=1):
     for i in tqdm(range(0,len(test)-1)):
         for trial_idx in range(num_trials):
             success = False
+
+            board_size_str = f"{test[i][0]}x{test[i][1]}"
                 
             print()
-            print(bcolors.WARNING+"Test " + str(i+1) + " of " + str(len(test))+"."+bcolors.ENDC)
+            print(bcolors.WARNING+f"Test {i+1} of {len(test)} [Trial {trial_idx+1}]."+bcolors.ENDC)
             print()
             orig_stdout = sys.stdout
-            print(bcolors.OKBLUE+'Generating board:  '+bcolors.ENDC+str(test[i][0])+' x '+str(test[i][1])+' with '+str(test[i][2])+' mines')
+            print(bcolors.OKBLUE+'Generating board:  '+bcolors.ENDC+board_size_str+' with '+str(test[i][2])+' mines')
             print('...')
-            print(bcolors.OKBLUE+'Solving board: '+bcolors.ENDC+str(test[i][0])+' x '+str(test[i][1])+' with '+str(test[i][2])+' mines')
-            f = open('Test_'+str(test[i][0])+'x'+str(test[i][1])+'_'+str(test[i][2])+'_mines'+'.txt', 'w')
+            print(bcolors.OKBLUE+'Solving board: '+bcolors.ENDC+board_size_str+' with '+str(test[i][2])+' mines')
+            f = open(f'Test_{board_size_str}_{test[i][2]}_mines_trial{trial_idx+1}.txt', 'w')
             sys.stdout = f
             start_time = time.time()
             status = None
@@ -48,7 +50,6 @@ def run(test : list, num_trials : int=1):
                 status = aut.autosolver(test[i][0],test[i][1],test[i][2])
             except Exception as e:
                 print("type error: " + str(e))
-                print(traceback.format_exc())
 
             elapsed_time = time.time() - start_time
             print(bcolors.OKBLUE+"Time spent: "+bcolors.ENDC+str(datetime.timedelta(seconds=elapsed_time)))
@@ -66,6 +67,7 @@ def run(test : list, num_trials : int=1):
             else:
                 status_str = bcolors.FAIL+" Lost game "+bcolors.ENDC
 
+            print()
             print(status_str)
             print(bcolors.OKBLUE+"Time spent: "+bcolors.ENDC+str(elapsed_time_str))
             print()
