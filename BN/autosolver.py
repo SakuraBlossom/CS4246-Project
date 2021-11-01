@@ -96,8 +96,11 @@ def autosolver(anchura, altura, numMinas):
         print("check boxes to loop before iteration")
         print(checkboxesToIterateSet)
 
+
+        print()
+        print("[BOX - P. !MINE - P. MINE - NUM OF EVIDENCES]", flush=True)
+
         for p in range(len(checkboxesToIterateSet)):
-            print("probability of the box: " + checkboxesToIterateSet[p])
             modelCopy = modelo.copy()
             discardedNodes = []
             noBorrar =[]
@@ -116,9 +119,7 @@ def autosolver(anchura, altura, numMinas):
                     le = vesiii[2:3]
                     noBorrar.append("Y"+str(ke)+str(le))
                 noBorrar.append(vesiii)
-            print()
-            print("number of evidences in this iteration:")
-            print(contadorEvideciasVecinos)
+
             discovered = False
             if contadorEvideciasVecinos < 1:
                 continue
@@ -130,18 +131,16 @@ def autosolver(anchura, altura, numMinas):
             modelCopy.remove_nodes_from(discardedNodes)
             Model_Game_ev = pgmi.VariableElimination(modelCopy)
 
-            print("TEST")
             node_query = Model_Game_ev.query([checkboxesToIterateSet[p]], evidences)
             if not (checkboxesToIterateSet[p] in node_query.variables):
                 continue
                 
             assert(len(node_query.variables) == 1)
-            print()
-            print("[P. !MINE - P. MINE]", flush=True)
-            print(node_query.values)
-
             probValues = node_query.values
             finalProbsList.append(probValues)
+
+            print(f"{checkboxesToIterateSet[p]}, {probValues[0]}, {probValues[1]}, {contadorEvideciasVecinos}")
+
             """
             If we are sure that there is a mine, we mark it with a flag directly and they are calculations that we will not have
             to repeat afterwards. 
@@ -173,7 +172,7 @@ def autosolver(anchura, altura, numMinas):
                 break
 
         if discovered is False:
-            if not finalProbsList:
+            if not finalProbsList or len(finalProbsList) == 0:
                 print("Little evidence, retry")
                 break
             listasCeros = [item[0] for item in finalProbsList]

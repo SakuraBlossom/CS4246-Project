@@ -51,7 +51,7 @@ def gameNetworkGenerator(game):
         def counterPermutations(lsa):
             count = 0
             for f in range(len(lsa)):
-                if lsa[f] is 1:
+                if lsa[f] == 1:
                     count = count + 1
             return count
         #Generamos tantas listas como Y necesitamos + 1 (incluyendo la inexistencia de bomba)
