@@ -4,7 +4,7 @@ import numpy as np
 import sys
 sys.path.insert(1,"./Models")
 import torch.nn as nn
-from ddqn import DDQN, Buffer
+from ddqn_cpu import DDQN, Buffer
 from game import MineSweeper
 from renderer import Render
 from numpy import float32
@@ -65,7 +65,7 @@ class Driver():
         self.target_model.eval()
         self.optimizer = torch.optim.Adam(self.current_model.parameters(),lr=0.003,weight_decay=1e-5)
         self.batch_no = 0
-        #self.load_models(10000)
+        #self.load_models(1800)
         self.scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer,step_size=2000,gamma=0.95)
         self.target_model.load_state_dict(self.current_model.state_dict())
         self.buffer = Buffer(100000)
@@ -85,7 +85,7 @@ class Driver():
     
     def load_models(self,number):
         path = "./pre-trained/ddqn_dnn"+str(number)+".pth"
-        weights = torch.load(path)
+        weights = torch.load(path, map_location = torch.device('cpu'))
         self.batch_no = weights['epoch']
         self.current_model.load_state_dict(weights['current_state_dict'])
         self.target_model.load_state_dict(weights['target_state_dict'])
@@ -124,8 +124,8 @@ class Driver():
         state,action,mask,reward,next_state,next_mask,terminal = self.buffer.sample(self.batch_size)
 
         ### Converts the variabls to tensors for processing by DDQN
-        state      = Variable(torch.FloatTensor(float32([t.to("cpu").numpy() for t in state])))
-        mask      = Variable(torch.FloatTensor(float32([t.to("cpu").numpy() for t in mask])))
+        state      = Variable(FloatTensor(float32(state)))
+        mask      = Variable(FloatTensor(float32(mask)))
         next_state = torch.FloatTensor(float32(next_state))
         action     = torch.LongTensor(float32(action))
         next_mask      = torch.FloatTensor(float32(next_mask))
@@ -190,7 +190,7 @@ class Driver():
 
 def main():
 
-    driver = Driver(8,8,10,False)
+    driver = Driver(6,6,6,False)
     state = driver.env.state
     epochs = 20000
     save_every = 200
@@ -203,8 +203,8 @@ def main():
         
         # simple state action reward loop and writes the actions to buffer
         mask = 1- driver.env.fog
-        state      = Variable(FloatTensor(float32(state)))
-        mask      = Variable(FloatTensor(float32(mask)))
+        #state      = Variable(FloatTensor(float32(state)))
+        #mask      = Variable(FloatTensor(float32(mask)))
         action = driver.get_action(state,mask)
         next_state,terminal,reward,_ = driver.do_step(action)
         driver.buffer.push(state.flatten(),action,mask.flatten(),reward,next_state.flatten(),(1-driver.env.fog).flatten(),terminal)

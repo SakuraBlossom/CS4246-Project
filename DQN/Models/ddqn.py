@@ -11,7 +11,7 @@ class DDQN(nn.Module):
     def __init__(self, inp_dim, action_dim):
         super(DDQN, self).__init__()
         
-        self.epsilon = -1
+        self.epsilon = 1
         self.feature = nn.Sequential(
             nn.Linear(inp_dim, 128),
             nn.ReLU(),

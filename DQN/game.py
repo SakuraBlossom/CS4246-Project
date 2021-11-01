@@ -56,7 +56,6 @@ class MineSweeper():
 
     ### Game logic for choosing a point in grid
     def choose(self,i,j):
-        if (self.grid[i][j] == -1):
             
         if(self.grid[i][j]==0):
             unfog_zeros(self.grid,self.fog,i,j)
