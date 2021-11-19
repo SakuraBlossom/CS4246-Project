@@ -428,7 +428,7 @@ class MSGame(object):
         vecinos = self.neightbours_of_position(posi,posj)
         for vecino in vecinos:
             i = int(vecino[1:3])
-            j = int(vecino[4:5])
+            j = int(vecino[4:6])
             if self.board.mine_map[j,i] == 1:
                 self.mover_mina_a_esquina(j,i)
 

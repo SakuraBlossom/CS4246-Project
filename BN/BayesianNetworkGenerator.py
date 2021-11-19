@@ -18,7 +18,7 @@ def gameNetworkGenerator(game):
         for j in range(height):
             vecinos = game.neightbours_of_position(i,j)
             for x in range(0,len(vecinos)):
-                graph.append((vecinos[x],"Y" + str(i) + str(j)))
+                graph.append((vecinos[x],f"Y{i:02}_{j:02}"))
         
     #Añadimos a la modelo bayesiano la información obtenida anteriormente
     Modelo_msgame = pgmm.BayesianModel(graph)
@@ -41,8 +41,8 @@ def gameNetworkGenerator(game):
 
     resY  = [s for s in modelnodesY if 'Y' in s] 
     for l in range(0,len(resY)):
-        i = resY[l][1:2]
-        j = resY[l][2:3]
+        i = resY[l][1:3]
+        j = resY[l][4:6]
         vecinos = game.neightbours_of_position(int(i),int(j))
         listOpt = [0,1]
         #Se realizan las combinaciones

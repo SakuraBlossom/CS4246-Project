@@ -10,10 +10,7 @@ from msboard import bcolors
 
 
 
-testset = [ [6,6,6], [8,8,6],[8,8,13],[8,8,19],[8,8,26],
-    [10,10,10],[10,10,20],[10,10,30],[10,10,40],
-    [20,20,10],[20,20,20],[20,20,30],[20,20,40],[20,20,80],
-]
+testset = [ [20,20,80] ]
 
 #testset = [ [6,6,6] ]
 """
@@ -45,7 +42,7 @@ def run(test : list, num_trials : int=1):
             print(bcolors.OKBLUE+'Generating board:  '+bcolors.ENDC+board_size_str+' with '+str(test[i][2])+' mines')
             print('...')
             print(bcolors.OKBLUE+'Solving board: '+bcolors.ENDC+board_size_str+' with '+str(test[i][2])+' mines')
-            f = open(f'logs/Test_{board_size_str}_{test[i][2]}_mines.txt', 'w')
+            f = open(f'logs/Test_{board_size_str}_{test[i][2]}_mines_2.txt', 'w')
             sys.stdout = f
             start_time = time.time()
             status = None
