@@ -1,4 +1,3 @@
-import networkx  # Permite trabajar con grafos
 import pgmpy as pgm
 import pgmpy.models as pgmm
 import pgmpy.factors.discrete as pgmf  # Tablas de probabilidades condicionales y

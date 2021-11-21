@@ -93,4 +93,5 @@ def run(test : list, num_trials : int=1):
     print("\n".join(test_res))
     pass
 
+# Runs each game configuraion for 50 trials
 run(testset, 50)

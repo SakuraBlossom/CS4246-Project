@@ -4,7 +4,6 @@ from BayesianNetworkGenerator import gameNetworkGenerator
 from msboard import bcolors
 from random import randint
 import pgmpy.inference as pgmi
-import networkx
 import numpy
 import sys
 import pgmpy.inference.EliminationOrder as elor
