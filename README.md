@@ -13,13 +13,14 @@ This project explores the implementation of MineSweeper Solver using various app
 ---
 
 ## CSP
-Adapted from TODO
+Adapted from http://www.cs.utoronto.ca/~cvs/minesweeper/
 
 #### Requirements for CSP solver
-TODO
+    Java
 
 #### How to Run CSP solver
-TODO
+1. Set up the configuration (eg. number of mines, number of rows/columns etc) to test in `src/map/PGMS.java`
+2. Compile the code and run `PGMS`
 
 ---
 
